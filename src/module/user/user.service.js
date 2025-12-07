@@ -5,6 +5,8 @@ const {REFRESH_TOKEN_EXPIRES_IN,ACCESS_TOKEN_EXPIRES_IN,JWT_SECRET} = require('.
 
 
 exports.createUserService = async({name,email,password, role}) =>{
+    const usercheck = await User.findOne({email});
+    if(usercheck) throw new Error('user already exist');
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({name,email, password: hashedPassword, role : role || 'user'});
     return await user.save();
